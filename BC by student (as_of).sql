@@ -26,7 +26,7 @@ FROM
 	LEFT OUTER JOIN scrape_students AS students
 		ON students.site_id = basecamp_schools.site_id
 		AND students.visibility = 'visible'
-		AND students.last_leave_on > CURRENT_DATE
+		AND students.still_enrolled = TRUE
 	LEFT OUTER JOIN scrape_teachers AS mentors
 		ON mentors.dbid = students.mentor_id
 		AND mentors.as_of = students.as_of
