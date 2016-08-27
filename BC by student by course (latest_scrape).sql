@@ -25,15 +25,8 @@ SELECT
   courses.grade_level AS "Course Grade Level",
   courses.default_seventy_pcnt_score AS "Default 70 Percent Score",
   courses.alternate_seventy_pcnt_score AS "Alternate 70 Percent Score",
-  teachers.last_name AS "Teacher Last Name",
-  teachers.first_name AS "Teacher First Name",
-  teachers.email AS "Teacher Email",
   sections.sis_id AS "Illuminate Section ID",
   sections.name AS "Period Name",
-
-  -- Coach Information
-  coaches.coach_last_name AS "Coach Last Name",
-  coaches.coach_first_name AS "Coach First Name",
 
   -- Grades
   course_assignments.target_letter_grade AS "Grade Goal",
@@ -93,13 +86,6 @@ FROM
     ON course_assignment_sections.course_assignment_id = course_assignments.dbid
   INNER JOIN latest_scrape_sections AS sections
     ON sections.dbid = course_assignment_sections.section_id
-  LEFT OUTER JOIN latest_scrape_section_teachers AS section_teachers
-    ON section_teachers.section_id = sections.dbid
-  LEFT OUTER JOIN latest_scrape_teachers AS teachers
-    ON teachers.dbid = section_teachers.teacher_id
-  LEFT OUTER JOIN coaching_allocations AS coaches
-    ON coaches.teacher_email = teachers.email
-
 
 WHERE
   sites.name NOT IN ('Unknown Summit','SPS Tour') AND
@@ -111,7 +97,8 @@ WHERE
 
 
 ORDER BY
-  "Site",
+  "Site Name",
   "Grade Level",
   "Student Last Name",
   "Student First Name"
+;
