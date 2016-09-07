@@ -2,7 +2,9 @@ SELECT
 
   -- Student Information
   students.as_of AS "As Of Date",
-	bc_sites.use_name AS "Site Name",
+  bc_sites.use_name AS "Site Name",
+  bc_sites.basecamp_mentor AS Basecamp Mentor,
+  bc_sites.region AS Region,
   bc_sites.tableau_email AS "Tableau Email",
   students.grade_level AS "Grade Level",
   students.school_id AS "Student ID",
