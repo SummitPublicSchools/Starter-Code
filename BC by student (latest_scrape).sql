@@ -4,6 +4,7 @@ SELECT DISTINCT
 	, basecamp_schools.use_name AS school_name
 	, basecamp_schools.tableau_email AS tableau_email
 	, basecamp_schools.region AS region
+	, basecamp_schools.basecamp_mentor AS mentor 
 
 	-- Student
 	, students.grade_level AS grade_level
