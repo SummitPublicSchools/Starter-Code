@@ -1,6 +1,8 @@
+--Pulls the latest scrape of student data. Includes demographic data (don't share SPED data). 
 SELECT DISTINCT
 	-- Site
 	schools.dbid AS school_id
+	, schools.name AS school_name
 
 	-- Student
 	, students.grade_level AS grade_level
@@ -8,6 +10,25 @@ SELECT DISTINCT
 	, students.last_name AS student_last_name
 	, students.first_name AS student_first_name
 
+
+, CASE
+                WHEN student_demographics.ethnicity IS NOT NULL THEN student_demographics.ethnicity
+                ELSE 'Not Specified'
+                END AS ethnicity
+            , CASE
+                WHEN student_demographics.socioeconomic_status = 'T' THEN 'Socioeconomically Disadvantaged'
+                WHEN student_demographics.socioeconomic_status = 'F' THEN 'Not Socioeconomically Disadvantaged'
+                ELSE 'Awaiting Paperwork'
+                END AS socioeconomic_status
+            , CASE
+                WHEN student_demographics.is_sped = 'T' THEN 'Special Education'
+                WHEN student_demographics.is_sped = 'F' THEN 'General Education'
+                ELSE 'Awaiting Paperwork'
+                END AS sped
+            , CASE
+                WHEN student_demographics.english_proficiency IS NOT NULL THEN student_demographics.english_proficiency
+                ELSE 'Awaiting Paperwork'
+                END AS english_proficiency
 	-- Mentor
 	, mentors.last_name || ', ' || mentors.first_name AS mentor_name
 
@@ -21,6 +42,8 @@ latest_scrape_sites AS schools
 		ON students.site_id = schools.dbid
 		AND students.visibility = 'visible'
 		AND students.last_leave_on > CURRENT_DATE
+	LEFT OUTER JOIN summit_student_demographics AS student_demographics
+		ON student_demographics.student_id = students.dbid
 	LEFT OUTER JOIN latest_scrape_teachers AS mentors
 		ON mentors.dbid = students.mentor_id
 	LEFT OUTER JOIN latest_scrape_course_assignments AS cas
