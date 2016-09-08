@@ -1,3 +1,5 @@
+--pulls latest student and course level information. includes demographics: don't share SPED data
+
 SELECT
 
   -- Student Information
@@ -7,6 +9,26 @@ SELECT
   students.last_name AS "Student Last Name",
   students.first_name AS "Student First Name",
   students.email AS "Student Email",
+
+ CASE
+                WHEN student_demographics.ethnicity IS NOT NULL THEN student_demographics.ethnicity
+                ELSE 'Not Specified'
+                END AS ethnicity
+            , CASE
+                WHEN student_demographics.socioeconomic_status = 'T' THEN 'Socioeconomically Disadvantaged'
+                WHEN student_demographics.socioeconomic_status = 'F' THEN 'Not Socioeconomically Disadvantaged'
+                ELSE 'Awaiting Paperwork'
+                END AS socioeconomic_status
+            , CASE
+                WHEN student_demographics.is_sped = 'T' THEN 'Special Education'
+                WHEN student_demographics.is_sped = 'F' THEN 'General Education'
+                ELSE 'Awaiting Paperwork'
+                END AS sped
+            , CASE
+                WHEN student_demographics.english_proficiency IS NOT NULL THEN student_demographics.english_proficiency
+                ELSE 'Awaiting Paperwork'
+                END AS english_proficiency,
+
 
   -- Mentor Information
   mentors.last_name AS "Mentor Last Name",
@@ -62,6 +84,8 @@ SELECT
 
 FROM
   latest_scrape_students AS students
+	LEFT OUTER JOIN summit_student_demographics AS student_demographics
+		ON student_demographics.student_id = students.dbid
   LEFT OUTER JOIN latest_scrape_sped_cases AS sped_cases
     ON sped_cases.student_id = students.dbid
 		AND students.visibility = 'visible'
