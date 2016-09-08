@@ -1,3 +1,4 @@
+--pulls student and course level as of a specified data (remember to change the as_of date to your desired date). Includes demographic data: do not share SPED data
 SELECT
 
   -- Student Information
@@ -8,6 +9,26 @@ SELECT
   students.last_name AS "Student Last Name",
   students.first_name AS "Student First Name",
   students.email AS "Student Email",
+
+
+ CASE
+                WHEN student_demographics.ethnicity IS NOT NULL THEN student_demographics.ethnicity
+                ELSE 'Not Specified'
+                END AS ethnicity
+            , CASE
+                WHEN student_demographics.socioeconomic_status = 'T' THEN 'Socioeconomically Disadvantaged'
+                WHEN student_demographics.socioeconomic_status = 'F' THEN 'Not Socioeconomically Disadvantaged'
+                ELSE 'Awaiting Paperwork'
+                END AS socioeconomic_status
+            , CASE
+                WHEN student_demographics.is_sped = 'T' THEN 'Special Education'
+                WHEN student_demographics.is_sped = 'F' THEN 'General Education'
+                ELSE 'Awaiting Paperwork'
+                END AS sped
+            , CASE
+                WHEN student_demographics.english_proficiency IS NOT NULL THEN student_demographics.english_proficiency
+                ELSE 'Awaiting Paperwork'
+                END AS english_proficiency,
 
   -- Mentor Information
   mentors.last_name AS "Mentor Last Name",
@@ -67,6 +88,8 @@ FROM
     ON sped_cases.student_id = students.dbid
     AND sped_cases.as_of = students.as_of
 		AND students.visibility = 'visible'
+	LEFT OUTER JOIN summit_student_demographics AS student_demographics
+		ON student_demographics.student_id = students.dbid
   LEFT OUTER JOIN scrape_teachers AS case_managers
     ON case_managers.dbid = sped_cases.teacher_id
     AND case_managers.as_of = students.as_of
@@ -97,7 +120,7 @@ FROM
 
 WHERE
   -- Enter date of data pull needed in Line 112 in the format 'YYYY-MM-DD'. Note that data from previous years may not be available.
-  students.as_of = '2016-08-23' AND
+  students.as_of = '2016-08-23' AND 
   sites.district_id = 1 AND
   sites.name NOT IN ('Unknown Summit','SPS Tour') AND
   subjects.core = TRUE AND
