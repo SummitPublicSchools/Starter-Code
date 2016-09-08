@@ -1,7 +1,8 @@
-SELECT DISTINCT
+SELECT
 	-- Site
 	schools.dbid AS school_id
 	, basecamp_schools.use_name AS school_name
+	, schools.enrollment_group
 	, basecamp_schools.tableau_email AS tableau_email
 	, basecamp_schools.region AS region
 	, basecamp_schools.basecamp_mentor AS mentor 
@@ -18,16 +19,13 @@ SELECT DISTINCT
 
 FROM
 	basecamp_site_info AS basecamp_schools
-
-	-- Site Table
-	LEFT OUTER JOIN scrape_sites AS schools
-		ON schools.dbid = basecamp_schools.site_id
-
-	-- Student and Mentors Table
 	LEFT OUTER JOIN scrape_students AS students
 		ON students.site_id = basecamp_schools.site_id
 		AND students.visibility = 'visible'
 		AND students.still_enrolled = TRUE
+	LEFT OUTER JOIN scrape_sites AS schools
+		ON schools.dbid = basecamp_schools.site_id
+		AND schools.as_of = students.as_of 
 	LEFT OUTER JOIN scrape_teachers AS mentors
 		ON mentors.dbid = students.mentor_id
 		AND mentors.as_of = students.as_of
