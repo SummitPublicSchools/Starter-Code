@@ -1,4 +1,4 @@
---Pulls student data as of a specified date. Includes demographic data (do not share SPED data). Change as_of date for current or desired date. 
+--Pulls student data as of a specified date. Includes demographic data (do not share SPED data). Change as_of date for current or desired date. ***
 
 SELECT DISTINCT
 	-- Site
