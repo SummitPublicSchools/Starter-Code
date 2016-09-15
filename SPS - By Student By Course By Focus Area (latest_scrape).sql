@@ -49,7 +49,7 @@ SELECT
 FROM
 	(
 
-		SELECT DISTINCT
+		SELECT
 			-- School
 			schools.dbid AS school_id
 			, schools."name" AS school
