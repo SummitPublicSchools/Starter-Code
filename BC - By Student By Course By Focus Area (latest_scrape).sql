@@ -13,7 +13,7 @@ One course can have multiple teachers. To address this, teachers have been aggre
 
 --------------------------------------------------------------------------------------------------------------------------------------------
 
-SELECT DISTINCT
+SELECT
 	-- School
 	school_id
 	, school
@@ -49,7 +49,7 @@ SELECT DISTINCT
 FROM
 	(
 
-		SELECT DISTINCT
+		SELECT
 			-- School
 			schools.dbid AS school_id
 			, basecamp_schools.use_name AS school
