@@ -13,7 +13,7 @@ One course can have multiple teachers. To address this, teachers have been aggre
 
 --------------------------------------------------------------------------------------------------------------------------------------------
 
-SELECT DISTINCT
+SELECT
 	-- School
 	school_id
 	, school
@@ -49,7 +49,7 @@ SELECT DISTINCT
 FROM
 	(
 
-		SELECT DISTINCT
+		SELECT
 			-- School
 			schools.dbid AS school_id
 			, basecamp_schools.use_name AS school
@@ -121,14 +121,14 @@ FROM
 			LEFT OUTER JOIN scrape_course_assignment_sections AS course_assignment_sections
 				ON course_assignment_sections.course_assignment_id = course_assignments.dbid
 				AND course_assignment_sections.as_of = course_assignments.as_of
-			LEFT OUTER JOIN latest_scrape_sections AS sections
+			LEFT OUTER JOIN scrape_sections AS sections
 				ON sections.dbid = course_assignment_sections.section_id
 				AND sections.as_of = course_assignment_sections.as_of
-			LEFT OUTER JOIN latest_scrape_section_teachers AS section_teachers
+			LEFT OUTER JOIN scrape_section_teachers AS section_teachers
 				ON section_teachers.section_id = sections.dbid
 				AND section_teachers.visibility = 'visible'
 				AND section_teachers.as_of = sections.as_of
-			LEFT OUTER JOIN latest_scrape_teachers AS teachers
+			LEFT OUTER JOIN scrape_teachers AS teachers
 				ON teachers.dbid = section_teachers.teacher_id
 				AND teachers.visibility = 'visible'
 				AND teachers.as_of = section_teachers.as_of
@@ -138,7 +138,7 @@ FROM
 				ON course_focus_areas.course_id = courses.dbid
 				AND course_focus_areas.as_of = courses.as_of
 			-- NOTE:  Used an INNER JOIN because we are only interested in courses with focus areas.
-			INNER JOIN latest_scrape_know_dos AS focus_areas
+			INNER JOIN scrape_know_dos AS focus_areas
 				ON focus_areas.dbid = course_focus_areas.know_do_id
 				AND focus_areas.visibility = 'visible'
 				AND focus_areas.as_of = course_focus_areas.as_of
