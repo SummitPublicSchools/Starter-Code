@@ -66,7 +66,7 @@ SELECT
 FROM
   latest_scrape_students AS students
 	INNER JOIN basecamp_site_info AS bc_sites
-		ON students.site_id = bc_sites.dbid
+		ON students.site_id = bc_sites.site_id
   LEFT OUTER JOIN latest_scrape_sped_cases AS sped_cases
     ON sped_cases.student_id = students.dbid
 		AND students.visibility = 'visible'
