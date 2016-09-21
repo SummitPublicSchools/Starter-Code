@@ -68,7 +68,7 @@ SELECT
 FROM
   scrape_students AS students
 	INNER JOIN basecamp_site_info AS bc_sites
-		ON students.site_id = bc_sites.dbid
+		ON students.site_id = bc_sites.site_id
 		--AND students.as_of = bc_sites.as_of (no bc_sites.as_of
   LEFT OUTER JOIN scrape_sped_cases AS sped_cases
     ON sped_cases.student_id = students.dbid
@@ -100,7 +100,7 @@ FROM
   LEFT OUTER JOIN scrape_sections AS sections
     ON sections.dbid = course_assignment_sections.section_id
     AND sections.as_of = students.as_of
-  
+
 
 WHERE
   -- Enter date of data pull needed in Line 112 in the format 'YYYY-MM-DD'. Note that data from previous years may not be available.
