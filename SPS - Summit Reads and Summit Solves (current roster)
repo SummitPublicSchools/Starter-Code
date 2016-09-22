@@ -1,0 +1,33 @@
+SELECT
+	students.last_name AS "Student Last Name",
+	students.first_name AS "Student First Name",
+	students.grade_level AS "Grade Level",
+	schools.name AS "School",
+	mentors.last_name || ', ' || mentors.first_name AS "Mentor Name",
+	mentors.email AS "Mentor E-mail",
+
+	sis_courses.name AS "Course",
+	tutors.last_name || ', ' || tutors.first_name AS "Tutor Name",
+	sections.name AS "Section Name"
+
+FROM
+	latest_scrape_students AS students
+	INNER JOIN latest_scrape_sites AS schools ON schools.enrollment_group = 'summit' AND students.site_id = schools.dbid AND students.still_enrolled
+	LEFT OUTER JOIN summit_student_demographics AS demographics ON students.dbid = demographics.student_id
+	LEFT OUTER JOIN scrape_section_students AS section_rosters ON section_rosters.student_id = students.dbid AND students.as_of = section_rosters.as_of
+	LEFT OUTER JOIN latest_scrape_sections AS sections ON sections.dbid = section_rosters.section_id
+	INNER JOIN latest_scrape_sis_courses AS sis_courses ON sis_courses.dbid = sections.sis_course_id 
+			AND (LEFT(sis_courses.course_number,2) = 'S2' OR LEFT(sis_courses.course_number,2) = 'S3') -- S2 is Reads, S3 is Solves
+	LEFT OUTER JOIN latest_scrape_teachers AS mentors ON mentors.dbid = students.mentor_id
+	LEFT OUTER JOIN latest_scrape_section_teachers AS section_teachers ON section_teachers.section_id = sections.dbid
+	LEFT OUTER JOIN latest_scrape_teachers AS tutors ON tutors.dbid = section_teachers.teacher_id
+	
+WHERE
+	sis_courses.academic_year = 2017
+
+ORDER BY
+	"School" ASC,
+	"Tutor Name" ASC,
+	"Section Name" ASC,
+	"Student Last Name" ASC,
+	"Student First Name" ASC
