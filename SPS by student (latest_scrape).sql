@@ -12,17 +12,17 @@ SELECT DISTINCT
 
 
 , CASE
-                WHEN student_demographics.ethnicity IS NOT NULL THEN student_demographics.ethnicity
+                WHEN student_demographics.reported_race IS NOT NULL THEN student_demographics.reported_race
                 ELSE 'Not Specified'
                 END AS ethnicity
             , CASE
-                WHEN student_demographics.socioeconomic_status = 'T' THEN 'Socioeconomically Disadvantaged'
-                WHEN student_demographics.socioeconomic_status = 'F' THEN 'Not Socioeconomically Disadvantaged'
+                WHEN student_demographics.sed = 'T' THEN 'Socioeconomically Disadvantaged'
+                WHEN student_demographics.sed = 'F' THEN 'Not Socioeconomically Disadvantaged'
                 ELSE 'Awaiting Paperwork'
                 END AS socioeconomic_status
             , CASE
-                WHEN student_demographics.is_sped = 'T' THEN 'Special Education'
-                WHEN student_demographics.is_sped = 'F' THEN 'General Education'
+                WHEN student_demographics.sped = 'T' THEN 'Special Education'
+                WHEN student_demographics.sped = 'F' THEN 'General Education'
                 ELSE 'Awaiting Paperwork'
                 END AS sped
             , CASE
