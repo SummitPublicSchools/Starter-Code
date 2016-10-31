@@ -1,0 +1,54 @@
+SELECT bc_info.use_name AS "School"
+, students.dbid AS "PLP ID"
+, students.school_id AS "School ID"
+, students.first_name || ' ' || students.last_name AS "Student Name"
+, students.grade_level AS "Grade Level"
+, courses.name AS "Course"
+, projects.name AS "Project"
+, pads.as_of AS "Score As Of Date"
+--, pads.cog_skill_dimension_id
+, cog.name AS "Cog Skill Dimension"
+, pads.score AS "Earned Score"
+, cas.seventy_pcnt_score AS "Passing Cog Skill Score"
+, teachers.first_name || ' ' || teachers.last_name AS "Teacher"
+, mentors.first_name || ' ' || mentors.last_name AS "Mentor"
+
+
+FROM public.latest_scrape_sites AS schools
+INNER JOIN basecamp_site_info AS bc_info ON schools.dbid = bc_info.site_id
+INNER JOIN public.latest_scrape_students AS students ON schools.dbid = students.site_id AND students.still_enrolled
+INNER JOIN public.latest_scrape_course_assignments AS cas ON cas.student_id = students.dbid AND cas.visibility = 'visible' --AND cas.as_of = students.as_of
+INNER JOIN public.latest_scrape_courses AS courses ON courses.dbid = cas.course_id AND courses.academic_year = 2017
+INNER JOIN public.latest_scrape_project_courses AS pcs ON pcs.course_id = courses.dbid
+INNER JOIN public.latest_scrape_project_assignments AS pas ON pas.student_id = students.dbid AND pas.project_id = pcs.project_id AND pas.visibility = 'visible' AND pas.state = 'scored'
+LEFT OUTER JOIN public.latest_scrape_projects AS projects ON projects.dbid = pas.project_id
+LEFT OUTER JOIN public.scrape_project_assignment_dimension_scores AS pads ON pads.project_assignment_id = pas.dbid AND DATE_PART(dow, pads.as_of) = 1
+INNER JOIN public.scrape_cog_skill_dimensions AS cog ON cog.dbid = pads.cog_skill_dimension_id
+LEFT OUTER JOIN public.latest_scrape_teachers AS teachers ON pads.created_by = teachers.dbid
+LEFT OUTER JOIN public.latest_scrape_teachers AS mentors ON students.mentor_id = mentors.dbid
+
+WHERE
+POSITION('+little@' IN students.email) = 0
+
+GROUP BY
+"School"
+, "PLP ID"
+, "School ID"
+, "Grade Level"
+, "Student Name"
+, "Course"
+, "Project"
+, "Score As Of Date"
+--, pads.cog_skill_dimension_id
+, "Cog Skill Dimension"
+, "Earned Score"
+, "Passing Cog Skill Score"
+, pas.dbid
+, "Teacher"
+, "Mentor"
+
+ORDER BY
+"PLP ID" ASC
+, "Course" ASC
+, pas.dbid ASC
+, "Score As Of Date" ASC
